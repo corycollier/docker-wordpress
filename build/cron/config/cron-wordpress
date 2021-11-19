@@ -1,0 +1,3 @@
+0 0 * * * root cd app && wp --allow-root core update
+0 0 * * * root cd app && wp --allow-root plugin update --all
+0 0 * * * root cd app && wp --allow-root theme update --all

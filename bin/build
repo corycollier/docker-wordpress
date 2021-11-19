@@ -1,0 +1,23 @@
+#!/bin/bash
+
+docker context use default
+
+root="$(pwd)"
+
+# build the cron
+cd "${root}/build/cron"
+pwd
+docker build --rm -t corycollier/wordpress:cron .
+docker push corycollier/wordpress:cron
+
+# build the application servers
+cd "${root}/build/web"
+pwd
+docker build --rm -t corycollier/wordpress:web .
+docker push corycollier/wordpress:web
+
+# build the front end
+cd "${root}/build/front"
+pwd
+docker build --rm -t corycollier/wordpress:front .
+docker push corycollier/wordpress:front
