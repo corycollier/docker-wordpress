@@ -1,0 +1,58 @@
+version: '3.7'
+
+x-logging: &logging
+  logging:
+    options:
+      max-size: "200k"
+      max-file: "3"
+
+services:
+  front:
+    <<: *logging
+    image: corycollier/wordpress:front
+    depends_on:
+      - web
+    volumes:
+      - wordpress:/var/www/html
+
+  cron:
+    <<: *logging
+    image: corycollier/wordpress:cron
+    command: ["cron", "-f"]
+    depends_on:
+      - web
+    volumes:
+      - wordpress:/app
+
+  db:
+    <<: *logging
+    image  : mariadb:10.4
+    restart: unless-stopped
+    depends_on:
+      - loki
+    volumes:
+      - db-data:/var/lib/mysql
+
+  web:
+    <<: *logging
+    image : corycollier/wordpress:web
+    restart: unless-stopped
+    working_dir: /var/www/html
+    depends_on:
+      - db
+    deploy:
+      mode: replicated
+      replicas: 2
+    expose:
+      - 80
+
+  redis:
+    <<: *logging
+    image: redis
+    expose:
+      - 6379
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  wordpress:
