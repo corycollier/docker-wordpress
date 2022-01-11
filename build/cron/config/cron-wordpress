@@ -1,3 +1,6 @@
-0 0 * * * root cd app && wp --allow-root core update
-0 0 * * * root cd app && wp --allow-root plugin update --all
-0 0 * * * root cd app && wp --allow-root theme update --all
+SHELL=/bin/bash
+HOME=/app
+PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+0 * * * * /usr/local/bin/wp-cron >> /var/log/cron.log 2>&1
+0 4 * * * /usr/local/bin/wp-backup >> /var/log/cron.log 2>&1

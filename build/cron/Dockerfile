@@ -72,8 +72,17 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && mv wp-cli.phar /usr/local/bin/wp
 
 COPY config/custom.php.ini /usr/local/etc/php/conf.d/custom.php.ini
-COPY config/cron-wordpress /etc/cron.d/
+COPY config/cron-wordpress /app/cron-wordpress
 COPY dotfiles/.* /root/
+COPY scripts/* /usr/local/bin
+
+RUN touch /var/log/cron.log \
+    && chown www-data /var/log/cron.log
+
+USER www-data
+RUN crontab /app/cron-wordpress
 
 WORKDIR /app
-CMD [ "cron", "-f" ]
+
+USER root
+CMD cron -f
