@@ -1,0 +1,12 @@
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+date +"%F %T"
+[[ -f /app/cron.env ]] && . /app/cron.env
+/usr/local/bin/wp --allow-root db export "/app/wp-content/$(date +%F).wordpress.sql"
+
+# gzip sql files
+find /app/wp-content/ -maxdepth 1 -name '*.sql' -exec gzip -f {} \;
+
+# remove anything older than 2 weeks
+find /app/wp-content/ -maxdepth 1 -name '*.gz' -mtime +14 -exec rm -f {} \;
