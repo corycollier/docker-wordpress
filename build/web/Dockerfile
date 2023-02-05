@@ -1,4 +1,4 @@
-FROM wordpress:latest
+FROM wordpress:php8.2
 MAINTAINER corycollier@corycollier.com
 
 RUN apt update -y \
