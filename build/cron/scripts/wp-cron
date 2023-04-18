@@ -1,8 +1,8 @@
 #!/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
-date +"%F %T"
-[[ -f /app/cron.env ]] && . /app/cron.env
+cd /var/www/html
+
 /usr/local/bin/wp --allow-root cron event run --due-now
 /usr/local/bin/wp --allow-root core update
 /usr/local/bin/wp --allow-root core update-db

@@ -1,58 +1,38 @@
 version: '3.7'
 
-x-logging: &logging
-  logging:
-    options:
-      max-size: "200k"
-      max-file: "3"
-
 services:
-  front:
-    <<: *logging
-    image: corycollier/wordpress:front
-    depends_on:
-      - web
-    volumes:
-      - wordpress:/var/www/html
 
   cron:
-    <<: *logging
     image: corycollier/wordpress:cron
+    env_file: .env
     command: ["cron", "-f"]
     depends_on:
       - web
     volumes:
-      - wordpress:/app
+      - wp:/var/www/html
+      - tmp:/tmp
 
   db:
-    <<: *logging
-    image  : mariadb:10.4
+    image  : mariadb:10.7
+    env_file: .env
     restart: unless-stopped
     depends_on:
       - loki
     volumes:
-      - db-data:/var/lib/mysql
+      - db:/var/lib/mysql
+      - tmp:/tmp
 
   web:
-    <<: *logging
     image : corycollier/wordpress:web
+    env_file: .env
     restart: unless-stopped
     working_dir: /var/www/html
+    volumes:
+      - wp:/var/www/html
     depends_on:
       - db
-    deploy:
-      mode: replicated
-      replicas: 2
-    expose:
-      - 80
-
-  redis:
-    <<: *logging
-    image: redis
-    expose:
-      - 6379
-    restart: unless-stopped
 
 volumes:
-  db-data:
-  wordpress:
+  db:
+  tmp:
+  wp:

@@ -14,9 +14,9 @@ RUN touch /var/log/cron.log \
     && chown www-data /var/log/cron.log
 
 USER www-data
-RUN crontab /app/cron-wordpress
+RUN crontab /var/www/html/cron-wordpress
 
-WORKDIR /app
+WORKDIR /var/www/html
 
 USER root
 CMD cron -f
